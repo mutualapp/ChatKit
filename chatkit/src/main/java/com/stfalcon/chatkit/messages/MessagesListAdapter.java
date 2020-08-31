@@ -191,22 +191,25 @@ public class MessagesListAdapter<MESSAGE extends IMessage>
      *
      * @param message updated message object.
      */
-    public boolean update(MESSAGE message) {
-        return update(message.getId(), message);
+    public boolean update(MESSAGE message, boolean scroll) {
+        return update(message.getId(), message, scroll);
     }
 
     /**
-     * Updates message by old identifier (use this method if id has changed). Otherwise use {@link #update(IMessage)}
+     * Updates message by old identifier (use this method if id has changed). Otherwise use {@link #update(IMessage, boolean)}
      *
      * @param oldId      an identifier of message to update.
      * @param newMessage new message object.
      */
-    public boolean update(String oldId, MESSAGE newMessage) {
+    public boolean update(String oldId, MESSAGE newMessage, boolean scroll) {
         int position = getMessagePositionById(oldId);
         if (position >= 0) {
             Wrapper<MESSAGE> element = new Wrapper<>(newMessage);
             items.set(position, element);
             notifyItemChanged(position);
+            if (layoutManager != null && scroll) {
+                layoutManager.scrollToPosition(0);
+            }
             return true;
         } else {
             return false;
